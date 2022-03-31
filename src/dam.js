@@ -68,7 +68,7 @@ class Dam {
             this.nodes.push(nums[j], nums[j + 1]);
         }
 
-        console.log('than here');
+        console.log('than here!!!!!!!!!');
         console.log(this.nodes);
         console.log(this.elemNodes);
     }
