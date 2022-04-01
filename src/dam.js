@@ -1,8 +1,3 @@
-
-function splitString(stringToSplit, separator) {
-    return stringToSplit.split(separator);
-}
-
 class Dam {
 
     elemNodes = new Array();
@@ -10,79 +5,66 @@ class Dam {
     bc = new Array();
 
     constructor(sourse) {
-        this.read(sourse);
+        this.load(sourse);
     }
     
-    read(sourse) {
+    read(ourRequest) {
+        let ourData = ourRequest.responseText;
+        //console.log(ourData);
+
+        let strBlocks = ourData.split('@');
+
+        console.log(strBlocks[2]);
+
+        let newStr = [
+            strBlocks[0].split(','),
+            strBlocks[1].split(','),
+            strBlocks[2].split(',')
+        ];
+
+        //console.log(newStr[2].length);
+
+        let nums = new Array(3);
+        for (let j = 0; j < 3; j++) {
+            nums[j] = new Array();
+            for (let i = 0; i < newStr[j].length; i++) {
+                nums[j].push(parseFloat(newStr[j][i]));
+            }
+        }
+        //console.log(nums);
+
+        for (let j = 0, i = 0; j < nums[0].length; j+=2, i++) {
+            this.nodes.push(new Array(nums[0][j], nums[0][j + 1]));
+        }
+        this.nodes = TransMatrix(this.nodes);
+
+        for (let j = 0; j < nums[1].length; j+=4) {
+            this.elemNodes.push(new Array(nums[1][j], nums[1][j + 1], nums[1][j + 2], nums[1][j + 3]));
+        }
+        this.elemNodes = TransMatrix(this.elemNodes);
+
+        for (let j = 0, i = 0; j < nums[2].length / 2; j++, i++) {
+            this.bc.push(new Array(nums[2][j], nums[2][j + nums[2].length / 2]));
+        }
+        this.bc = TransMatrix(this.bc);
+
+
+        console.log(this);
+    }
+
+    load(sourse) {
         var ourRequest = new XMLHttpRequest();
         ourRequest.open('GET', sourse);
+        //console.log('1');
         ourRequest.onload = function() {
-            var ourData = ourRequest.responseText;
-            console.log(ourData);
-        }
+            //console.log(ourRequest.readyState);
+            if (ourRequest.readyState == 4 && ourRequest.status == 200) {
+                //console.log(2);
+                dam.read(ourRequest);
+            }
+        };
         ourRequest.send();
     }
-
-    readNodes(sourse) {
-        let newStr = splitString(sourse, ",");
-        let nums = new Array();  
-
-        for (let i = 0; i < newStr.length; i++) {
-            nums.push(parseFloat(newStr[i]));
-        }
-
-        this.nodes = new Array(nums.length / 2);
-        for (let j = 0, i = 0; j < nums.length; j+=2, i++) {
-            this.nodes[this.nodes.length - 1] = new Array();
-            this.nodes.push(nums[j], nums[j + 1]);
-        }
-
-        console.log('than here!!!!!!!!!');
-        console.log(this.nodes);
-        console.log(this.elemNodes);
-    }
-
-    readElemNodes(sourse) {
-        let newStr = splitString(sourse, ",");
-        let nums = new Array();  
-
-        for (let i = 0; i < newStr.length; i++) {
-            nums.push(parseFloat(newStr[i]));
-        }
-
-        this.elemNodes = new Array(nums.length / 2);
-        for (let j = 0; j < nums.length; j+=4) {
-            this.elemNodes[this.elemNodes.length - 1] = new Array();
-            this.elemNodes.push(nums[j], nums[j + 1], nums[j + 2], nums[j + 3]);
-        }
-    }
-
-    /*
-    * Deprecated
-    */
-    /*
-    read(sourse) {
-        let str = sourse;
-        let newStr = splitString(sourse, ",");
-        let nums = [];
-  
-        //console.log(str);
-        //console.log(newStr);
-  
-        
-        for (let i = 0; i < newStr.length; i++) {
-              nums.push(parseFloat(newStr[i]));
-        }
-  
-        //console.log(nums);
-        
-        for (let i = 0; i <= nums.length; i+=2) {
-              nums.splice(i, 1);
-        }
-
-        return nums;
-    }
-    */
   
     draw() {
         canvas.width = 500;
