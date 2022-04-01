@@ -1,28 +1,59 @@
+const SHIFT_Y = 1000;
+
+var canvas = document.getElementById("canvas");
+var ctx = canvas.getContext("2d");
 
 function splitString(stringToSplit, separator) {
     return stringToSplit.split(separator);
+}
+
+class Point {
+    constructor(x, y) {
+        this.x = x;
+        this.y = y;
+    }
+}
+
+function rotate(p, angle) {
+    return (new Point (p.x * Math.cos(angle) - p.y * Math.sin(angle),
+        -p.x * Math.sin(angle) + p.y * Math.cos(angle)));
 }
 
 class Dam {
 
     elemNodes = new Array();
     nodes = new Array();
-    bc = new Array();
+
 
     constructor(sourse) {
-        this.read(sourse);
+        
+        /*
+        * Deprecated
+        */ 
+        /*
+        sourse = this.read(sourse);
+
+        let arr = [];
+        for (let i = 0; i < sourse.length; i += 2) {
+            arr.push(new Point(sourse[i], sourse[i + 1]));
+        }
+
+        var min = [100000,];
+        for (let i = 0; i < arr.length; i ++) {
+            if (arr[i].y < min[0]) {
+                min = [arr[i].y, i];
+            }
+        }
+        
+        for (let i = 0; i < arr.length; i ++) {
+            arr[i].y -= min[0];
+            arr[i] = rotate(arr[i], Math.PI / 3);
+        }
+        this.coords = arr;
+        this.temps = [];
+        */
     }
     
-    read(sourse) {
-        var ourRequest = new XMLHttpRequest();
-        ourRequest.open('GET', sourse);
-        ourRequest.onload = function() {
-            var ourData = ourRequest.responseText;
-            console.log(ourData);
-        }
-        ourRequest.send();
-    }
-
     readNodes(sourse) {
         let newStr = splitString(sourse, ",");
         let nums = new Array();  
