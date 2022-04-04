@@ -1,4 +1,4 @@
-function TransMatrix(A)       //На входе двумерный массив
+function TransMatrix(A)       
 {
     var m = A.length, n = A[0].length, AT = [];
     for (var i = 0; i < n; i++)
@@ -8,9 +8,10 @@ function TransMatrix(A)       //На входе двумерный массив
     return AT;
 }
 
-function SumMatrix(A,B)       //На входе двумерные массивы одинаковой размерности
+function SumMatrix(A,B)      
 {   
     var m = A.length, n = A[0].length, C = [];
+
     for (var i = 0; i < m; i++)
      { C[ i ] = [];
        for (var j = 0; j < n; j++) C[ i ][j] = A[ i ][j]+B[ i ][j];
@@ -18,7 +19,7 @@ function SumMatrix(A,B)       //На входе двумерные массив�
     return C;
 }
 
-function multMatrixNumber(a,A)  // a - число, A - матрица (двумерный массив)
+function multMatrixNumber(a,A)  
 {   
     var m = A.length, n = A[0].length, B = [];
     for (var i = 0; i < m; i++)
@@ -28,30 +29,35 @@ function multMatrixNumber(a,A)  // a - число, A - матрица (двум�
     return B;
 }
 
-function MultiplyMatrix(A,B)
-{
-    var rowsA = A.length, colsA = A[0].length,
-        rowsB = B.length, colsB = B[0].length,
-        C = [];
-    if (colsA != rowsB) return false;
-    for (var i = 0; i < rowsA; i++) C[ i ] = [];
-    for (var k = 0; k < colsB; k++)
-     { for (var i = 0; i < rowsA; i++)
-        { var t = 0;
-          for (var j = 0; j < rowsB; j++) t += A[ i ][j]*B[j][k];
-          C[ i ][k] = t;
-        }
-     }
+function MultiplyMatrix(A,B) {
+    let rowsA = A.length;
+    let colsA = A[0].length;
+    let rowsB = B.length;
+    let colsB = B[0].length;
+    let C = [];
+    
+    if (colsA != rowsB) {
+      return false;
+    }
+    for (let i = 0; i < rowsA; i++) {C[ i ] = [];}
+
+    for (let k = 0; k < colsB; k++) {
+      for (let i = 0; i < rowsA; i++) {
+        let t = 0;
+        for (let j = 0; j < rowsB; j++) {t += A[i][j]*B[j][k];}
+        C[i][k] = t;
+      }
+    }
     return C;
 }
 
 function MatrixPow(n,A)
 { 
-    if (n == 1) return A;     // Функцию MultiplyMatrix см. выше
+    if (n == 1) return A;     
     else return MultiplyMatrix( A, MatrixPow(n-1,A) );
 }
 
-function Determinant(A)   // Используется алгоритм Барейса, сложность O(n^3)
+function Determinant(A)   
 {
     var N = A.length, B = [], denom = 1, exchanges = 0;
     for (var i = 0; i < N; ++i)
@@ -81,12 +87,87 @@ function Determinant(A)   // Используется алгоритм Баре�
     else return B[N-1][N-1];
 }
 
-function InverseMatrix(A)   // A - двумерный квадратный массив
+function InverseMatrix(A)   
 {   
-    var det = Determinant(A);                // Функцию Determinant см. выше
+    var det = Determinant(A);              
     if (det == 0) return false;
-    var N = A.length, A = AdjugateMatrix(A); // Функцию AdjugateMatrix см. выше
+    var N = A.length, A = AdjugateMatrix(A); 
     for (var i = 0; i < N; i++)
      { for (var j = 0; j < N; j++) A[ i ][j] /= det; }
     return A;
+}
+
+function AdjugateMatrix(A)  
+{                                        
+    var N = A.length, adjA = [];
+    for (var i = 0; i < N; i++)
+     { adjA[ i ] = [];
+       for (var j = 0; j < N; j++)
+        { var B = [], sign = ((i+j)%2==0) ? 1 : -1;
+          for (var m = 0; m < j; m++)
+           { B[m] = [];
+             for (var n = 0; n < i; n++)   B[m][n] = A[m][n];
+             for (var n = i+1; n < N; n++) B[m][n-1] = A[m][n];
+           }
+          for (var m = j+1; m < N; m++)
+           { B[m-1] = [];
+             for (var n = 0; n < i; n++)   B[m-1][n] = A[m][n];
+             for (var n = i+1; n < N; n++) B[m-1][n-1] = A[m][n];
+           }
+          adjA[ i ][j] = sign*Determinant(B);   
+        }
+     }
+    return adjA;
+}
+
+function trsMatrix(N, ind, Ki) {
+  //console.log(N, ind, Ki);
+  let Ki_new = new Array(N);
+
+  for (let i = 0; i < Ki_new.length; i++) {
+      Ki_new[i] = new Array(N);
+      for (let j = 0; j < Ki_new.length; j++) {
+        Ki_new[i][j] = 0;
+      }
+  }
+  
+  for (let i = 0; i < 3; i++) {
+    ind[i]--;
+  }
+
+  Ki_new[ind[0]][ind[0]] = Ki[0][0];
+  
+  Ki_new[ind[0]][ind[1]] = Ki[0][1];
+  
+  Ki_new[ind[0]][ind[2]] = Ki[0][2];
+  
+  Ki_new[ind[1]][ind[0]] = Ki[1][0];
+  
+  Ki_new[ind[1]][ind[1]] = Ki[1][1];
+  
+  Ki_new[ind[1]][ind[2]] = Ki[1][2];
+  
+  Ki_new[ind[2]][ind[0]] = Ki[2][0];
+  
+  Ki_new[ind[2]][ind[1]] = Ki[2][1];
+  
+  Ki_new[ind[2]][ind[2]] = Ki[2][2];
+
+  return Ki_new;
+}
+
+function getStifnessMatrix(coords, Lambda) {
+  let J = [
+      [coords[0][2] - coords[0][0], coords[1][2] - coords[1][0]],
+      [coords[0][1] - coords[0][0], coords[1][1] - coords[1][0]]
+  ];
+
+  let Bnat = [
+      [-1, 0, 1],
+      [-1, 1, 0]
+  ];
+
+  B = MultiplyMatrix(InverseMatrix(J), Bnat);
+
+  return MultiplyMatrix(multMatrixNumber(Lambda, TransMatrix(B)), multMatrixNumber(Determinant(J) / 2, B));
 }
