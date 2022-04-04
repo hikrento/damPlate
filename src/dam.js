@@ -81,34 +81,42 @@ class Dam {
 
         for (let i = 0; i < K.length; i++) {
             K[i] = new Array(nodeLength);
+            for (let j = 0; j < K[0].length; j++) {
+                K[i][j] = 0;
+            }
         }
 
-        for (let i = 0; i < K.length; i++) {
-            K[i] = 0;
-        }
 
-        for (let i = 0; i < this.elemNodes.length; i++) {
+        for (let i = 0; i < this.elemNodes[0].length; i++) {
             var elem_n_lock = [1, 2, 3];
             elem_n_lock[0] = this.elemNodes[0][i];
             elem_n_lock[1] = this.elemNodes[1][i];
             elem_n_lock[2] = this.elemNodes[2][i];
         
-            //console.log(elem_n_lock);
-
             R = [1, 2, 3];
             for (let i = 0; i < 3; i++) {
                 R[i] = new Array(this.nodes[0][elem_n_lock[i] - 1], this.nodes[1][elem_n_lock[i] - 1]);
             }
             R = TransMatrix(R);
-
+            
             let Ki = getStifnessMatrix(R, this.elemNodes[3][i]);
-            console.log('Ki:');
             Ki = trsMatrix(nodeLength, elem_n_lock, Ki);
+            
+            /*for (let i = 0; i < Ki.length; i++) {
+                for (let j = 0; j < Ki[0].length; j++) {
+                    if (Ki[i][j] != 0) {
+                        console.log(Ki[i][j], i, j);
+                    }
+                }
+            }*/
+
             K = SumMatrix(K, Ki);
+
+            //console.log('----------------------------------------------------------------');
         }
 
-        console.log(K);
-        
+        //console.log(K[10][0]);
+
         var F = new Array(nodeLength);
 
     }

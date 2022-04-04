@@ -10,12 +10,18 @@ function TransMatrix(A)
 
 function SumMatrix(A,B)      
 {   
-    var m = A.length, n = A[0].length, C = [];
+    let n = A.length;
+    let m = A[0].length;
 
-    for (var i = 0; i < m; i++)
-     { C[ i ] = [];
-       for (var j = 0; j < n; j++) C[ i ][j] = A[ i ][j]+B[ i ][j];
-     }
+    let C = new Array(n);
+
+    for (let i = 0; i < n; i++) {
+      C[i] = new Array(m);
+      for (let j = 0 ; j < m; j++) {
+        C[i][j] = A[i][j] + B[i][j];
+      }
+    }
+
     return C;
 }
 
@@ -121,7 +127,6 @@ function AdjugateMatrix(A)
 }
 
 function trsMatrix(N, ind, Ki) {
-  //console.log(N, ind, Ki);
   let Ki_new = new Array(N);
 
   for (let i = 0; i < Ki_new.length; i++) {
@@ -170,4 +175,19 @@ function getStifnessMatrix(coords, Lambda) {
   B = MultiplyMatrix(InverseMatrix(J), Bnat);
 
   return MultiplyMatrix(multMatrixNumber(Lambda, TransMatrix(B)), multMatrixNumber(Determinant(J) / 2, B));
+}
+
+function cPrintMatrix(A, x) {
+
+  str = '';
+
+  for (let i = 0; i < x; i++) {
+    for (let j = 0; j < x; j++) {
+      str += A[i][j];
+      str += '                     ';
+    }
+    str += '\n';
+  }
+
+  console.log(str);
 }
