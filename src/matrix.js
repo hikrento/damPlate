@@ -42,9 +42,6 @@ function MultiplyMatrix(A,B) {
     let colsB = B[0].length;
     let C = [];
     
-    if (colsA != rowsB) {
-      return false;
-    }
     for (let i = 0; i < rowsA; i++) {C[ i ] = [];}
 
     for (let k = 0; k < colsB; k++) {
@@ -55,6 +52,23 @@ function MultiplyMatrix(A,B) {
       }
     }
     return C;
+}
+
+function MultiplyMatrixLineVariant(A,B) {
+  let rowsA = A.length;
+  let rowsB = B.length;
+  let colsB = B[0].length;
+  let C = new Array(rowsA);
+
+  for (let i = 0; i < rowsA; i++) {
+    let t = 0;
+    for (let j = 0; j < rowsB; j++) {
+      t += A[i][j]*B[j];
+    }
+    C[i] = t;
+  }
+  
+  return C;
 }
 
 function MatrixPow(n,A)

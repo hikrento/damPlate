@@ -9,7 +9,8 @@ ourRequest.onload = function() {
         dam = new Dam();
         dam.read(ourRequest);
         dam.init();
-        dam.solve();
+        let temperatue = dam.solve();
+        dam.draw(temperatue);
     }
 };
 ourRequest.send();

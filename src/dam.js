@@ -53,7 +53,7 @@ class Dam {
         //console.log(this);
     }
   
-    draw() {
+    draw(T) {
         canvas.width = 500;
         canvas.height = 500;
         
@@ -101,23 +101,23 @@ class Dam {
             
             let Ki = getStifnessMatrix(R, this.elemNodes[3][i]);
             Ki = trsMatrix(nodeLength, elem_n_lock, Ki);
-            
-            /*for (let i = 0; i < Ki.length; i++) {
-                for (let j = 0; j < Ki[0].length; j++) {
-                    if (Ki[i][j] != 0) {
-                        console.log(Ki[i][j], i, j);
-                    }
-                }
-            }*/
-
             K = SumMatrix(K, Ki);
-
-            //console.log('----------------------------------------------------------------');
         }
-
-        //console.log(K[10][0]);
 
         var F = new Array(nodeLength);
 
+        for (let i = 0; i < F.length; i++) {
+            F[i] = 0;
+        }
+
+        for (let i = 0; i < this.bc[0].length; i++) {
+            for (let j = 0; j < K[0].length; j++) {
+                K[this.bc[0][i] - 1][j] = 0;
+            }
+            K[this.bc[0][i] - 1][this.bc[0][i] - 1] = 1;            
+            F[this.bc[0][i] - 1] = this.bc[1][i];
+        }
+
+        return MultiplyMatrixLineVariant(InverseMatrix(K), F);
     }
 }
