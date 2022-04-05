@@ -61,16 +61,13 @@ class Dam {
         
         ctx.beginPath();
   
-        //ctx.moveTo(0, 0);
-        //console.log(this.coords);
         for (let i = 0; i < this.coords.length; i++) {
               this.coords[i].x *= 5;
               this.coords[i].y *= 5;
               ctx.moveTo(this.coords[i].x + 200, this.coords[i].y + 200);
               ctx.arc(this.coords[i].x + 200, this.coords[i].y + 200, 5, 0, Math.PI * 2, true);
         }
-        //console.log(this.coords);
-        
+
         ctx.fill();
     }
 
