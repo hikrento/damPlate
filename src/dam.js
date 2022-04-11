@@ -1,14 +1,11 @@
+const RANGE_COLOR = 510;
+
 class Dam {
     elemNodes = new Array();
     nodes = new Array();
     bc = new Array();
 
     constructor() {
-    }
-
-    init() {
-        var canvas = document.getElementById("canvas");
-        var ctx = canvas.getContext("2d");
     }
 
     read(ourRequest) {
@@ -53,22 +50,151 @@ class Dam {
         //console.log(this);
     }
   
+    colorToColorType(color) {
+        if (color > 255) {
+            color = 'rgb(' + (color - 255 + 1) + ',0,0)';
+        } else {
+            color = 'rgb(0,0,' + color + ')';
+        }
+        return color;
+    }
+
     draw(T) {
+        console.log("paint begin");
+        console.log(T);
+        var canvas = document.getElementById("canvas");
+        var ctx = canvas.getContext("2d");
+
         canvas.width = 500;
         canvas.height = 500;
+        ctx.transform(1, 0, 0, -1, 0, canvas.height);
+        //ctx.fillStyle = "green";
         
-        ctx.fillStyle = "green";
         
-        ctx.beginPath();
   
-        for (let i = 0; i < this.coords.length; i++) {
-              this.coords[i].x *= 5;
-              this.coords[i].y *= 5;
-              ctx.moveTo(this.coords[i].x + 200, this.coords[i].y + 200);
-              ctx.arc(this.coords[i].x + 200, this.coords[i].y + 200, 5, 0, Math.PI * 2, true);
+        //console.log(this.nodes);
+
+        let coords = TransMatrix(this.nodes);
+        let maxTemper = -100, minTemper = 1000, minCoord = 10000;
+        
+        for (let i = 0; i < T.length; i++) {
+            if (T[i] > maxTemper) {
+                maxTemper = T[i];
+            } else if (T[i] < minTemper) {
+                minTemper = T[i];
+            }
         }
 
-        ctx.fill();
+        let deltaT = maxTemper - minTemper;
+        let sectorT = Math.floor(RANGE_COLOR / deltaT);
+        let pointColor = new Array(T.length);
+
+        for (let i = 0; i < T.length; i++) {
+            pointColor[i] = (T[i] - minTemper + 1) * sectorT;
+        }
+
+        for (let i = 0; i < coords.length; i++) {
+            if (minCoord > coords[i][0]) {
+                minCoord = coords[i][0];
+            }
+        }
+
+        for (let i = 0; i < coords.length; i++) {
+            coords[i][0] -= minCoord;
+        }
+
+
+        //var arr = ['green', 'red'];
+        /*for (let i = 0; i < coords.length; i++) {
+                ctx.beginPath();
+                ctx.fillStyle = 'rgb(' + 
+                                T[i] * 10 + ',' + T[i] * 10 + ',' + T[i] * 10 +')';   
+                coords[i][0] *= 0.8;
+                coords[i][1] *= 0.8;
+                ctx.moveTo(coords[i][0], coords[i][1]);
+                ctx.arc(coords[i][0], coords[i][1], 5, 0, Math.PI * 2, true);
+                ctx.fill();
+        }*/
+        //console.log(this.elemNodes);
+
+
+        for (let i = 0; i < coords.length; i++) {
+            coords[i][0] *= 0.8;
+            coords[i][1] *= 0.8;
+        }
+
+        for (let i = 0; i < this.elemNodes[0].length; i++) {
+
+            // reordered to make the same as OP's image
+            var v1 = { x: coords[this.elemNodes[0][i] - 1][0], y: coords[this.elemNodes[0][i] - 1][1], color: pointColor[this.elemNodes[0][i] - 1] };
+            var v2 = { x: coords[this.elemNodes[1][i] - 1][0], y: coords[this.elemNodes[1][i] - 1][1], color: pointColor[this.elemNodes[0][i] - 1] };
+            var v3 = { x: coords[this.elemNodes[2][i] - 1][0], y: coords[this.elemNodes[2][i] - 1][1], color: pointColor[this.elemNodes[0][i] - 1] };
+
+            var radius = 20;
+
+            ///////////////////////////////
+            let tmpColor = v1.color;
+
+            tmpColor = this.colorToColorType(tmpColor);
+
+            var grd1 = ctx.createRadialGradient(v1.x, v1.y, 0, v1.x, v1.y, radius);
+            grd1.addColorStop(0, tmpColor);
+
+            tmpColor = this.colorToColorType(Math.abs(Math.floor((v2.color - v3.color) / 2)));
+            grd1.addColorStop(1, tmpColor);
+
+            ////////////////////////////////
+            tmpColor = v2.color;
+
+            tmpColor = this.colorToColorType(tmpColor);
+
+            var grd2 = ctx.createRadialGradient(v2.x, v2.y, 0, v2.x, v2.y, radius);
+            grd2.addColorStop(0, tmpColor);
+
+            tmpColor = this.colorToColorType(Math.abs(Math.floor((v1.color - v3.color) / 2)));
+            grd2.addColorStop(1, tmpColor);
+            
+            ///////////////////////////////
+            tmpColor = v3.color;
+
+            tmpColor = this.colorToColorType(tmpColor);
+
+            var grd3 = ctx.createRadialGradient(v3.x, v3.y, 0, v3.x, v3.y, radius);
+            grd3.addColorStop(0, tmpColor);
+
+            tmpColor = this.colorToColorType(Math.abs(Math.floor((v1.color - v2.color) / 2)));
+            grd3.addColorStop(1, tmpColor);
+
+            ctx.beginPath();
+
+            ctx.moveTo(v1.x, v1.y);
+            ctx.lineTo(v2.x, v2.y);
+            ctx.lineTo(v3.x, v3.y);
+
+            ctx.closePath();
+
+            // fill with black
+            ctx.fill();
+
+            // set blend mode
+            ctx.globalCompositeOperation = "lighter";
+
+            ctx.fillStyle = grd1;
+            ctx.fill();
+
+            ctx.fillStyle = grd2;
+            ctx.fill();
+
+            ctx.fillStyle = grd3;
+            ctx.fill();
+
+            // if you need to draw something else, don't forget to reset the gCO
+            ctx.globalCompositeOperation = "source-over";
+
+        }
+
+
+        console.log('Paint closed');
     }
 
     solve() {
@@ -82,7 +208,6 @@ class Dam {
                 K[i][j] = 0;
             }
         }
-
 
         for (let i = 0; i < this.elemNodes[0].length; i++) {
             var elem_n_lock = [1, 2, 3];
