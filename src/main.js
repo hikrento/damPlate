@@ -27,3 +27,14 @@ function getValue (id) {
     return false;
 }
 
+function getValue2 (id) {
+    text = document.getElementById(id).value; //value of the text input
+    
+    for (let i = ZONE_LEN; i < dam.elemNodes[0].length; i++) {
+        dam.elemNodes[3][i] = Number(text);
+    }
+
+    dam.draw(dam.solve());
+    return false;
+}
+
