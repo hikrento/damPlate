@@ -65,7 +65,7 @@ class Dam {
         var canvas = document.getElementById("canvas");
         var ctx = canvas.getContext("2d");
 
-        canvas.width = 500;
+        canvas.width = 1200;
         canvas.height = 500;
         ctx.transform(1, 0, 0, -1, 0, canvas.height);
         //ctx.fillStyle = "green";
@@ -103,9 +103,12 @@ class Dam {
             coords[i][0] -= minCoord;
         }
 
+    
+
+/*
 
         //var arr = ['green', 'red'];
-        /*for (let i = 0; i < coords.length; i++) {
+        for (let i = 0; i < coords.length; i++) {
                 ctx.beginPath();
                 ctx.fillStyle = 'rgb(' + 
                                 T[i] * 10 + ',' + T[i] * 10 + ',' + T[i] * 10 +')';   
@@ -114,23 +117,25 @@ class Dam {
                 ctx.moveTo(coords[i][0], coords[i][1]);
                 ctx.arc(coords[i][0], coords[i][1], 5, 0, Math.PI * 2, true);
                 ctx.fill();
-        }*/
+        }
         //console.log(this.elemNodes);
-
+*/
 
         for (let i = 0; i < coords.length; i++) {
-            coords[i][0] *= 0.8;
-            coords[i][1] *= 0.8;
+            coords[i][0] *= 2.0;
+            coords[i][1] *= 2.0;
         }
 
         for (let i = 0; i < this.elemNodes[0].length; i++) {
 
             // reordered to make the same as OP's image
             var v1 = { x: coords[this.elemNodes[0][i] - 1][0], y: coords[this.elemNodes[0][i] - 1][1], color: pointColor[this.elemNodes[0][i] - 1] };
-            var v2 = { x: coords[this.elemNodes[1][i] - 1][0], y: coords[this.elemNodes[1][i] - 1][1], color: pointColor[this.elemNodes[0][i] - 1] };
-            var v3 = { x: coords[this.elemNodes[2][i] - 1][0], y: coords[this.elemNodes[2][i] - 1][1], color: pointColor[this.elemNodes[0][i] - 1] };
+            var v2 = { x: coords[this.elemNodes[1][i] - 1][0], y: coords[this.elemNodes[1][i] - 1][1], color: pointColor[this.elemNodes[1][i] - 1] };
+            var v3 = { x: coords[this.elemNodes[2][i] - 1][0], y: coords[this.elemNodes[2][i] - 1][1], color: pointColor[this.elemNodes[2][i] - 1] };
 
-            var radius = 20;
+            var radius = Math.floor(Math.sqrt(
+                Math.pow(Math.abs(v1.x - v2.x), 2) + Math.pow(Math.abs(v1.y - v2.y), 2)
+            ));
 
             ///////////////////////////////
             let tmpColor = v1.color;
@@ -141,6 +146,8 @@ class Dam {
             grd1.addColorStop(0, tmpColor);
 
             tmpColor = this.colorToColorType(Math.abs(Math.floor((v2.color - v3.color) / 2)));
+
+            console.log(v1.color, v2.color, v3.color, i);
             grd1.addColorStop(1, tmpColor);
 
             ////////////////////////////////
