@@ -4,6 +4,7 @@ class Dam {
     elemNodes = new Array();
     nodes = new Array();
     bc = new Array();
+    temperature = [];
 
     constructor() {
     }
@@ -59,20 +60,15 @@ class Dam {
         return color;
     }
 
-    draw(T) {
+    draw() {
         console.log("paint begin");
-        console.log(T);
+        let T = this.temperature;
+
         var canvas = document.getElementById("canvas");
         var ctx = canvas.getContext("2d");
 
         canvas.width = 1200;
         canvas.height = 500;
-        ctx.transform(1, 0, 0, -1, 0, canvas.height);
-        //ctx.fillStyle = "green";
-        
-        
-  
-        //console.log(this.nodes);
 
         let coords = TransMatrix(this.nodes);
         let maxTemper = -100, minTemper = 1000, minCoord = 10000;
@@ -85,6 +81,17 @@ class Dam {
             }
         }
 
+        //ctx.textAlign = "center";
+        ctx.fillStyle = 'green';
+        ctx.font = "18px Verdana";
+        ctx.fillText(minTemper.toFixed(2) + '°C', 70, 350);
+        ctx.fillText(maxTemper.toFixed(2) + '°C', 70, 65);
+        ctx.transform(1, 0, 0, -1, 0, canvas.height);
+        //ctx.fillStyle = "green";
+        
+        
+  
+        //console.log(this.nodes);
         let deltaT = maxTemper - minTemper;
         let sectorT = Math.floor(RANGE_COLOR / deltaT);
         let pointColor = new Array(T.length);
@@ -200,7 +207,13 @@ class Dam {
 
         }
 
-
+        /** draw legend */
+        var grd4 = ctx.createLinearGradient(35, 150, 35, 400);
+        grd4.addColorStop(0, 'blue');
+        grd4.addColorStop(1, 'red');
+        ctx.fillStyle = grd4;
+        ctx.fillRect(20, 150, 50, 300);
+        
         console.log('Paint closed');
     }
 
@@ -247,6 +260,6 @@ class Dam {
             F[this.bc[0][i] - 1] = this.bc[1][i];
         }
 
-        return MultiplyMatrixLineVariant(InverseMatrix(K), F);
+        this.temperature = MultiplyMatrixLineVariant(InverseMatrix(K), F);
     }
 }
