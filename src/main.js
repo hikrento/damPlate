@@ -20,19 +20,33 @@ ourRequest.onload = function() {
         loadText.color = 'green'
         loadText.textContent = 'Done';
         $('#loadCircle').hide();
+        ourRequest.abort;
     }
 };
 ourRequest.send();
 
+
 function reDraw() {
     loadText.color = 'red';
     loadText.textContent = 'Loading...';
-    $('#loadCircle').show();		
-    dam.solve();
-    dam.draw();
-    loadText.color = 'green';
-    loadText.textContent = 'Done';
-    $('#loadCircle').hide();
+    $('#loadCircle').show();
+    
+    var ourRequest1 = new XMLHttpRequest();
+    var fff = ourRequest1.open('GET', sourse, true);
+    console.log(fff);
+    ourRequest1.onload = function() {
+        console.log('sosososos');
+        console.log(ourRequest.readyState);
+        console.log(ourRequest.status);
+        if (ourRequest1.readyState == 4 && ourRequest1.status == 200) {
+            dam.solve();
+            dam.draw();
+            loadText.color = 'green';
+            loadText.textContent = 'Done';
+            $('#loadCircle').hide();
+        }
+    };
+    ourRequest1.send();
 }
 
 function updateChanges() {
