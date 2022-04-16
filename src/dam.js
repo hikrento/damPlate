@@ -202,6 +202,9 @@ class Dam {
             ctx.fillStyle = grd3;
             ctx.fill();
 
+            console.log('grads');
+            console.log(grd1, grd2, grd3, i);
+
             // if you need to draw something else, don't forget to reset the gCO
             ctx.globalCompositeOperation = "source-over";
 
