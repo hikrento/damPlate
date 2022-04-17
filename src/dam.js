@@ -11,11 +11,8 @@ class Dam {
 
     read(ourRequest) {
         let ourData = ourRequest.responseText;
-        //console.log(ourData);
 
         let strBlocks = ourData.split('@');
-
-        //console.log(strBlocks[2]);
 
         let newStr = [
             strBlocks[0].split(','),
@@ -23,16 +20,13 @@ class Dam {
             strBlocks[2].split(',')
         ];
 
-        //console.log(newStr[2].length);
-
         let nums = new Array(3);
         for (let j = 0; j < 3; j++) {
             nums[j] = new Array();
             for (let i = 0; i < newStr[j].length; i++) {
                 nums[j].push(parseFloat(newStr[j][i]));
             }
-        }
-        //console.log(nums);
+        };
 
         for (let j = 0, i = 0; j < nums[0].length; j+=2, i++) {
             this.nodes.push(new Array(nums[0][j], nums[0][j + 1]));
@@ -48,10 +42,10 @@ class Dam {
             this.bc.push(new Array(nums[2][j], nums[2][j + nums[2].length / 2]));
         }
         this.bc = TransMatrix(this.bc);
-        //console.log(this);
     }
   
     colorToColorType(color) {
+        color = Math.floor(color)
         if (color > 255) {
             color = 'rgb(' + (color - 255 + 1) + ',0,0)';
         } else {
@@ -87,11 +81,7 @@ class Dam {
         ctx.fillText(minTemper.toFixed(2) + '°C', 70, 350);
         ctx.fillText(maxTemper.toFixed(2) + '°C', 70, 65);
         ctx.transform(1, 0, 0, -1, 0, canvas.height);
-        //ctx.fillStyle = "green";
-        
-        
-  
-        //console.log(this.nodes);
+
         let deltaT = maxTemper - minTemper;
         let sectorT = Math.floor(RANGE_COLOR / deltaT);
         let pointColor = new Array(T.length);
@@ -110,32 +100,13 @@ class Dam {
             coords[i][0] -= minCoord;
         }
 
-    
-
-/*
-
-        //var arr = ['green', 'red'];
-        for (let i = 0; i < coords.length; i++) {
-                ctx.beginPath();
-                ctx.fillStyle = 'rgb(' + 
-                                T[i] * 10 + ',' + T[i] * 10 + ',' + T[i] * 10 +')';   
-                coords[i][0] *= 0.8;
-                coords[i][1] *= 0.8;
-                ctx.moveTo(coords[i][0], coords[i][1]);
-                ctx.arc(coords[i][0], coords[i][1], 5, 0, Math.PI * 2, true);
-                ctx.fill();
-        }
-        //console.log(this.elemNodes);
-*/
-
         for (let i = 0; i < coords.length; i++) {
             coords[i][0] *= 2.0;
             coords[i][1] *= 2.0;
         }
 
         for (let i = 0; i < this.elemNodes[0].length; i++) {
-
-            // reordered to make the same as OP's image
+            
             var v1 = { x: coords[this.elemNodes[0][i] - 1][0], y: coords[this.elemNodes[0][i] - 1][1], color: pointColor[this.elemNodes[0][i] - 1] };
             var v2 = { x: coords[this.elemNodes[1][i] - 1][0], y: coords[this.elemNodes[1][i] - 1][1], color: pointColor[this.elemNodes[1][i] - 1] };
             var v3 = { x: coords[this.elemNodes[2][i] - 1][0], y: coords[this.elemNodes[2][i] - 1][1], color: pointColor[this.elemNodes[2][i] - 1] };
@@ -143,18 +114,14 @@ class Dam {
             var radius = Math.floor(Math.sqrt(
                 Math.pow(Math.abs(v1.x - v2.x), 2) + Math.pow(Math.abs(v1.y - v2.y), 2)
             ));
-
             ///////////////////////////////
             let tmpColor = v1.color;
-
             tmpColor = this.colorToColorType(tmpColor);
-
+            
             var grd1 = ctx.createRadialGradient(v1.x, v1.y, 0, v1.x, v1.y, radius);
             grd1.addColorStop(0, tmpColor);
 
             tmpColor = this.colorToColorType(Math.abs(Math.floor((v2.color - v3.color) / 2)));
-
-            console.log(v1.color, v2.color, v3.color, i);
             grd1.addColorStop(1, tmpColor);
 
             ////////////////////////////////
@@ -164,7 +131,6 @@ class Dam {
 
             var grd2 = ctx.createRadialGradient(v2.x, v2.y, 0, v2.x, v2.y, radius);
             grd2.addColorStop(0, tmpColor);
-
             tmpColor = this.colorToColorType(Math.abs(Math.floor((v1.color - v3.color) / 2)));
             grd2.addColorStop(1, tmpColor);
             
@@ -178,7 +144,6 @@ class Dam {
 
             tmpColor = this.colorToColorType(Math.abs(Math.floor((v1.color - v2.color) / 2)));
             grd3.addColorStop(1, tmpColor);
-
             ctx.beginPath();
 
             ctx.moveTo(v1.x, v1.y);
@@ -188,7 +153,7 @@ class Dam {
             ctx.closePath();
 
             // fill with black
-            ctx.fill();
+            //ctx.fill();
 
             // set blend mode
             ctx.globalCompositeOperation = "lighter";
@@ -201,11 +166,6 @@ class Dam {
 
             ctx.fillStyle = grd3;
             ctx.fill();
-
-            console.log('grads');
-            console.log(grd1, grd2, grd3, i);
-
-            // if you need to draw something else, don't forget to reset the gCO
             ctx.globalCompositeOperation = "source-over";
 
         }
@@ -214,9 +174,10 @@ class Dam {
         var grd4 = ctx.createLinearGradient(35, 150, 35, 400);
         grd4.addColorStop(0, 'blue');
         grd4.addColorStop(1, 'red');
+        ctx.globalCompositeOperation = "lighter";
         ctx.fillStyle = grd4;
         ctx.fillRect(20, 150, 50, 300);
-        
+        ctx.globalCompositeOperation = "source-over";
         console.log('Paint closed');
     }
 

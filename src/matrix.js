@@ -202,6 +202,4 @@ function cPrintMatrix(A, x) {
     }
     str += '\n';
   }
-
-  console.log(str);
 }
