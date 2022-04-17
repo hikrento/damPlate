@@ -1,6 +1,9 @@
 const ZONE_LEN = 56;
 const WATER_LEN = 12;
 
+var canvas = document.getElementById("canvas");
+var ctx = canvas.getContext("2d");
+
 var loadText = document.querySelector('#loadText');
 loadText.textContent = 'Loading...';
 $('#loadCircle').show();
@@ -13,7 +16,7 @@ ourRequest.onload = function() {
         dam = new Dam();
         dam.read(ourRequest);
         dam.solve();
-        dam.draw();
+        dam.draw(0, dam.elemNodes[0].length);
         loadText.color = 'green'
         loadText.textContent = 'Done';
         $('#loadCircle').hide();
@@ -33,7 +36,7 @@ function reDraw() {
     ourRequest1.onload = function() {
         if (ourRequest1.readyState == 4 && ourRequest1.status == 200) {
             dam.solve();
-            dam.draw();
+            dam.draw(0, dam.elemNodes[0].length);
             loadText.color = 'green';
             loadText.textContent = 'Done';
             $('#loadCircle').hide();
@@ -64,3 +67,8 @@ function updateChanges() {
     }
     reDraw();
 }
+
+function showBlock1 () {dam.showBlock1()}
+function showBlock2 () {dam.showBlock2()}
+function reDrawBlock1() {dam.reDrawBlock1()}
+function reDrawBlock2() {dam.reDrawBlock2()}
