@@ -8,11 +8,8 @@ $('#loadCircle').show();
 let sourse = 'https://hikrento.github.io/data/';
 var ourRequest = new XMLHttpRequest();
 ourRequest.open('GET', sourse);
-//console.log('1');
 ourRequest.onload = function() {
-    //console.log(ourRequest.readyState);
     if (ourRequest.readyState == 4 && ourRequest.status == 200) {
-        //console.log(2);
         dam = new Dam();
         dam.read(ourRequest);
         dam.solve();
@@ -33,11 +30,7 @@ function reDraw() {
     
     var ourRequest1 = new XMLHttpRequest();
     var fff = ourRequest1.open('GET', sourse, true);
-    console.log(fff);
     ourRequest1.onload = function() {
-        console.log('sosososos');
-        console.log(ourRequest.readyState);
-        console.log(ourRequest.status);
         if (ourRequest1.readyState == 4 && ourRequest1.status == 200) {
             dam.solve();
             dam.draw();
