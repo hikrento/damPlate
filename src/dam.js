@@ -5,6 +5,8 @@ class Dam {
     nodes = new Array();
     bc = new Array();
     temperature = [];
+    isShowed = [true, true];
+
 
     constructor() {
     }
@@ -54,12 +56,9 @@ class Dam {
         return color;
     }
 
-    draw() {
+    draw(from, to) {
         console.log("paint begin");
         let T = this.temperature;
-
-        var canvas = document.getElementById("canvas");
-        var ctx = canvas.getContext("2d");
 
         canvas.width = 1200;
         canvas.height = 500;
@@ -105,7 +104,7 @@ class Dam {
             coords[i][1] *= 2.0;
         }
 
-        for (let i = 0; i < this.elemNodes[0].length; i++) {
+        for (let i = from; i < to; i++) {
             
             var v1 = { x: coords[this.elemNodes[0][i] - 1][0], y: coords[this.elemNodes[0][i] - 1][1], color: pointColor[this.elemNodes[0][i] - 1] };
             var v2 = { x: coords[this.elemNodes[1][i] - 1][0], y: coords[this.elemNodes[1][i] - 1][1], color: pointColor[this.elemNodes[1][i] - 1] };
@@ -226,4 +225,97 @@ class Dam {
 
         this.temperature = MultiplyMatrixLineVariant(InverseMatrix(K), F);
     }
+
+    showBlock1() {
+        console.log('start');
+
+        this.isShowed[0] = false;
+
+        let coords = TransMatrix(this.nodes);
+        let maxTemper = -100, minTemper = 1000, minCoord = 10000;
+
+        for (let i = 0; i < coords.length; i++) {
+            if (minCoord > coords[i][0]) {
+                minCoord = coords[i][0];
+            }
+        }
+
+        for (let i = 0; i < coords.length; i++) {
+            coords[i][0] -= minCoord;
+        }
+
+        for (let i = 0; i < coords.length; i++) {
+            coords[i][0] *= 2.0;
+            coords[i][1] *= 2.0;
+        }
+
+        for (let i = 0; i < ZONE_LEN; i++) {
+            var v1 = { x: coords[this.elemNodes[0][i] - 1][0], y: coords[this.elemNodes[0][i] - 1][1] };
+            var v2 = { x: coords[this.elemNodes[1][i] - 1][0], y: coords[this.elemNodes[1][i] - 1][1] };
+            var v3 = { x: coords[this.elemNodes[2][i] - 1][0], y: coords[this.elemNodes[2][i] - 1][1] };
+            
+            ctx.beginPath();
+            ctx.moveTo(v1.x, v1.y);
+            ctx.lineTo(v2.x, v2.y);
+            ctx.lineTo(v3.x, v3.y);
+            ctx.closePath();
+            ctx.fillStyle = 'yellow';
+            ctx.fill();
+        }
+    }
+
+    showBlock2() {
+        this.isShowed[1] = false;
+        let coords = TransMatrix(this.nodes);
+        let maxTemper = -100, minTemper = 1000, minCoord = 10000;
+
+        for (let i = 0; i < coords.length; i++) {
+            if (minCoord > coords[i][0]) {
+                minCoord = coords[i][0];
+            }
+        }
+
+        for (let i = 0; i < coords.length; i++) {
+            coords[i][0] -= minCoord;
+        }
+
+        for (let i = 0; i < coords.length; i++) {
+            coords[i][0] *= 2.0;
+            coords[i][1] *= 2.0;
+        }
+        for (let i = ZONE_LEN; i < this.elemNodes[0].length; i++) {
+            var v1 = { x: coords[this.elemNodes[0][i] - 1][0], y: coords[this.elemNodes[0][i] - 1][1] };
+            var v2 = { x: coords[this.elemNodes[1][i] - 1][0], y: coords[this.elemNodes[1][i] - 1][1] };
+            var v3 = { x: coords[this.elemNodes[2][i] - 1][0], y: coords[this.elemNodes[2][i] - 1][1] };
+            
+            ctx.beginPath();
+            ctx.moveTo(v1.x, v1.y);
+            ctx.lineTo(v2.x, v2.y);
+            ctx.lineTo(v3.x, v3.y);
+            ctx.closePath();
+            ctx.fillStyle = 'orange';
+            ctx.fill();
+        }
+    }
+    
+    reDrawBlock1 () {
+        if (this.isShowed[0] == false && this.isShowed[1] == false) {
+            this.draw(0, this.elemNodes[0].length);
+            this.showBlock2();
+        } else {
+            this.draw(0, this.elemNodes[0].length);
+        }
+        this.isShowed[0] = true;
+    }
+
+    reDrawBlock2 () {
+        if (this.isShowed[0] == false && this.isShowed[1] == false) {
+            this.draw(0, this.elemNodes[0].length);
+            this.showBlock1();
+        } else {
+            this.draw(0, this.elemNodes[0].length);
+        }
+        this.isShowed[1] = true;
+    }
+
 }
